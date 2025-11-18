@@ -1,0 +1,9 @@
+/.vscode
+/OldCommissions
+AbilityTooltips.lua
+ChallengedModes.lua
+Commands.lua
+CustomPortraits.lua
+CustomReqs.lua
+PortraitIcon.lua
+TextImageRendering.lua
