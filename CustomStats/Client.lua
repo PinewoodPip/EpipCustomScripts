@@ -9,6 +9,7 @@ local ExampleCustomStats = Epip.GetFeature("Fafa_Overworld", "Features.Examples.
 -- STATS
 ---------------------------------------------
 
+-- Simple stat
 CustomStats.RegisterStat("EXAMPLE_SomeStat", {
     Name = "Test stat",
     Description = "Test description",
@@ -25,9 +26,43 @@ CustomStats.RegisterStat("EXAMPLE_SomeStat", {
     Footnote = "A footnote",
     Suffix = "%", -- Displayed after the value
     -- Boolean = true, -- If `true`, the stat will show no value. Use for binary stats ("acquired" or "not acquired")
-    -- MaxCharges = 3, -- If specified, this stat will display as "{Value}/{Value of MaxCharges stat}"
+    -- MaxCharges = "", -- Should be another stat ID; If specified, this stat will display as "{Value}/{Value of MaxCharges stat}". See example below.
     -- Prefix = "", -- Displayed before the value
-    -- DefaultValue = 0,
+    DefaultValue = 0,
+})
+
+-- Stat with charges (displays as "<Value>/<MaxChargesValue>")
+CustomStats.RegisterStat("EXAMPLE_StatWithCharges", {
+    Name = "Stat with charges",
+    Description = "Test description",
+    Tooltip = {
+        {
+            Type = "ItemName",
+            Label = "Stat with charges",
+        },
+        {
+            Type = "ItemDescription",
+            Label = "Description tooltip goes here",
+        },
+    },
+    Footnote = "A footnote",
+    MaxCharges = "EXAMPLE_StatWithCharges_Charges", -- See below.
+    DefaultValue = 14,
+})
+CustomStats.RegisterStat("EXAMPLE_StatWithCharges_Charges", {
+    Name = "Charges of a stat with charges",
+    Description = "Test description",
+    Tooltip = {
+        {
+            Type = "ItemName",
+            Label = "Charges of a stat with charges",
+        },
+        {
+            Type = "ItemDescription",
+            Label = "Description tooltip goes here",
+        },
+    },
+    DefaultValue = 30,
 })
 
 ---------------------------------------------
@@ -42,6 +77,7 @@ local category = {
     Behaviour = "GreyOut", -- Stats that are default value will appear greyed out in the tab. If you set this to "Hidden" instead, they hide (and the category disappears if the character has no stats of the category)
     Stats = {
         "EXAMPLE_SomeStat",
+        "EXAMPLE_StatWithCharges",
     },
 }
 CustomStats.RegisterCategory("Examples", category, 1) -- Insert before all other categories.
@@ -54,6 +90,6 @@ CustomStats.RegisterCategory("Examples", category, 1) -- Insert before all other
 CustomStats.Hooks.GetStatValue:Subscribe(function (ev)
     if ev.Stat.ID == "EXAMPLE_SomeStat" then
         local value = ExampleCustomStats:GetUserVariable(ev.Character, ExampleCustomStats.USERVAR_SOME_STAT)
-        ev.Value = value
+        ev.Value = value or ev.Value
     end
 end)
